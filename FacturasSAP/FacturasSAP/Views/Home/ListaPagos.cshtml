@@ -1,0 +1,17 @@
+﻿@Model List<PagoEncomiendaModel>
+@{
+    ViewData["Title"] = "ListaPagos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    @if (Model.Any())
+    {
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li>Id: @item.Id, Monto: @item.Amount</li> <!-- Reemplaza con las propiedades reales -->
+            }
+        </ul>
+    }
+    <h1>ListaPagos</h1>
+
