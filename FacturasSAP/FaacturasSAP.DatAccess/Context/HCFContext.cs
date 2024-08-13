@@ -11,75 +11,276 @@ public partial class HCFContext : DbContext
 {
     public HCFContext()
     {
+        
     }
-
     public HCFContext(DbContextOptions<HCFContext> options)
         : base(options)
     {
     }
 
-    public virtual DbSet<tbEmpresaGuium> tbEmpresaGuia { get; set; }
+    public virtual DbSet<EmpresaGuia> EmpresaGuia { get; set; }
 
-    public virtual DbSet<tbPagoEncomiendaDetalle> tbPagoEncomiendaDetalles { get; set; }
+    public virtual DbSet<PagoEncomienda> PagoEncomienda { get; set; }
 
-    public virtual DbSet<tbPagoEncomiendum> tbPagoEncomienda { get; set; }
+    public virtual DbSet<PagoEncomiendaDetalle> PagoEncomiendaDetalle { get; set; }
 
-    public virtual DbSet<tbTipoEncomiendum> tbTipoEncomienda { get; set; }
+    public virtual DbSet<Paises> Paises { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=HCF;User ID=sa;Password=Josue.Eufragio2001", x => x.UseDateOnlyTimeOnly());
+    public virtual DbSet<ProveedorSAP> ProveedorSAP { get; set; }
+
+    public virtual DbSet<RetencionImpuestos> RetencionImpuestos { get; set; }
+
+    public virtual DbSet<TipoEncomienda> TipoEncomienda { get; set; }
+
+    public virtual DbSet<TipoExoneradoSAP> TipoExoneradoSAP { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<tbEmpresaGuium>(entity =>
+        modelBuilder.Entity<EmpresaGuia>(entity =>
         {
-            entity.HasKey(e => e.IdEmpresaGuia).HasName("PK_tbEmpresaGuia_IdEmpresaGuia");
+            entity.HasKey(e => e.IdEmpresaGuia).HasName("PK_EmpresaGuia_IdEmpresaGuia");
 
-            entity.Property(e => e.Descripcion)
+            entity.ToTable("EmpresaGuia", "exp");
+
+            entity.Property(e => e.CodigoSAP)
                 .IsRequired()
-                .HasMaxLength(300);
-            entity.Property(e => e.Exprecion).HasMaxLength(300);
+                .HasMaxLength(50)
+                .HasDefaultValueSql("('')");
+            entity.Property(e => e.CreadoPor).HasMaxLength(255);
+            entity.Property(e => e.Descripcion).HasMaxLength(255);
+            entity.Property(e => e.ExpresionRegular)
+                .IsRequired()
+                .HasMaxLength(250)
+                .HasDefaultValueSql("('')");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificado).HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor).HasMaxLength(255);
         });
 
-        modelBuilder.Entity<tbPagoEncomiendaDetalle>(entity =>
+        modelBuilder.Entity<PagoEncomienda>(entity =>
         {
-            entity.HasKey(e => e.IdPagoEncomiendaDetalle).HasName("PK_tbPagoEncomiendaDetalle_IdPagoEncomiendaDetalle");
+            entity.HasKey(e => e.IdPagoEncomienda).HasName("PK_PagoEncomienda_IdPagoEncomienda");
 
-            entity.ToTable("tbPagoEncomiendaDetalle");
+            entity.ToTable("PagoEncomienda", "exp");
 
-            entity.Property(e => e.Precio).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.Traking).HasMaxLength(50);
+            entity.Property(e => e.CodigoSAP)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
+            entity.Property(e => e.EstadoPagoEncomienda)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.Fecha)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("date");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaVencimiento)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("date");
+            entity.Property(e => e.ModificadoPor)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
 
-            entity.HasOne(d => d.IdPagoEncomiendaNavigation).WithMany(p => p.tbPagoEncomiendaDetalles)
+            entity.HasOne(d => d.IdRetencionImpuestoNavigation).WithMany(p => p.PagoEncomienda)
+                .HasForeignKey(d => d.IdRetencionImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RetencionImpuesto_PagoEncomienda_IdRetencionImpuesto");
+
+            entity.HasOne(d => d.IdTipoExoneradoSAPNavigation).WithMany(p => p.PagoEncomienda)
+                .HasForeignKey(d => d.IdTipoExoneradoSAP)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TipoExoneradoSAP_PagoEncomienda_IdTipoExoneradoSAP");
+        });
+
+        modelBuilder.Entity<PagoEncomiendaDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdPagoEncomiendaDetalle).HasName("PK_PagoEncomiendaDetalle_IdPagoEncomiendaDetalle");
+
+            entity.ToTable("PagoEncomiendaDetalle", "exp");
+
+            entity.Property(e => e.CreadoPor)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
+            entity.Property(e => e.DescuentoOtorgado)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.EstadoPagoEncomienda)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
+            entity.Property(e => e.PrecioFlete).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.RecargoPorCombustible)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Tracking)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.HasOne(d => d.IdPagoEncomiendaNavigation).WithMany(p => p.PagoEncomiendaDetalle)
                 .HasForeignKey(d => d.IdPagoEncomienda)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbPagoEncomiendaDetalle_IdPagoEncomienda_IdPagoEncomienda");
+                .HasConstraintName("FK_PagoEncomienda_PagoEncomiendaDetalle_IdPagoEncomienda");
 
-            entity.HasOne(d => d.IdTipoEncomiendaNavigation).WithMany(p => p.tbPagoEncomiendaDetalles)
-                .HasForeignKey(d => d.IdTipoEncomienda)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-        });
-
-        modelBuilder.Entity<tbPagoEncomiendum>(entity =>
-        {
-            entity.HasKey(e => e.IdPagoEncomienda).HasName("PK_tbTipoEncomienda_IdPagoEncomienda");
-
-            entity.Property(e => e.Factura).HasMaxLength(50);
-
-            entity.HasOne(d => d.IdEmpresaGuiaNavigation).WithMany(p => p.tbPagoEncomienda)
-                .HasForeignKey(d => d.IdEmpresaGuia)
+            entity.HasOne(d => d.IdPaisNavigation).WithMany(p => p.PagoEncomiendaDetalle)
+                .HasForeignKey(d => d.IdPais)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbPagoEncomienda_tbTipoUsuario_IdEmpresaGuia");
+                .HasConstraintName("FK_Paises_PagoEncomiendaDetalle_IdPais");
+
+            entity.HasOne(d => d.IdTipoEncomiendaNavigation).WithMany(p => p.PagoEncomiendaDetalle)
+                .HasForeignKey(d => d.IdTipoEncomienda)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TipoEncomienda_PagoEncomiendaDetalle_IdTipoEncomienda");
         });
 
-        modelBuilder.Entity<tbTipoEncomiendum>(entity =>
+        modelBuilder.Entity<Paises>(entity =>
         {
-            entity.HasKey(e => e.IdTipoEncomienda).HasName("PK_tbTipoEncomienda_IdTipoEncomienda");
+            entity.HasKey(e => e.IdPais);
 
+            entity.ToTable("Paises", "gen");
+
+            entity.Property(e => e.CodigoMap).HasMaxLength(255);
+            entity.Property(e => e.CreadoPor)
+                .IsRequired()
+                .HasMaxLength(256);
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
+            entity.Property(e => e.ModifcadoPor)
+                .IsRequired()
+                .HasMaxLength(256);
+            entity.Property(e => e.Pais)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.PaisEspaniol).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<ProveedorSAP>(entity =>
+        {
+            entity.HasKey(e => e.IdProveedorSAP).HasName("PK__Proveedo__59968BCD7C8E9B83");
+
+            entity.ToTable("ProveedorSAP", "gen");
+
+            entity.Property(e => e.CAI)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.CodigoProveedor)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaInicial).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaVence).HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor).HasMaxLength(100);
+            entity.Property(e => e.NombreProveedor)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.Prefijo)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.RTN)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.TipoDocumento)
+                .IsRequired()
+                .HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<RetencionImpuestos>(entity =>
+        {
+            entity.HasKey(e => e.IdRetencionImpuesto).HasName("PK__Retencio__CD33D7228696CB5B");
+
+            entity.ToTable("RetencionImpuestos", "exp");
+
+            entity.Property(e => e.Codigo)
+                .IsRequired()
+                .HasMaxLength(8)
+                .IsUnicode(false);
+            entity.Property(e => e.CreadoPor)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EstadoRetencion)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Nombre)
+                .IsRequired()
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Tasa).HasColumnType("decimal(18, 4)");
+        });
+
+        modelBuilder.Entity<TipoEncomienda>(entity =>
+        {
+            entity.HasKey(e => e.IdTipoEncomienda).HasName("PK_TipoEncomienda_IdTipoEncomienda");
+
+            entity.ToTable("TipoEncomienda", "gen");
+
+            entity.Property(e => e.CreadoPor)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
             entity.Property(e => e.Descripcion)
                 .IsRequired()
-                .HasMaxLength(300);
+                .HasMaxLength(100);
+            entity.Property(e => e.EstadoPagoEncomienda)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasDefaultValueSql("('')");
+        });
+
+        modelBuilder.Entity<TipoExoneradoSAP>(entity =>
+        {
+            entity.HasKey(e => e.IdTipoExonerado).HasName("PK__TipoExon__6473EDFA6C7290F4");
+
+            entity.ToTable("TipoExoneradoSAP", "exp");
+
+            entity.Property(e => e.Codigo).HasMaxLength(8);
+            entity.Property(e => e.CreadoPor).HasMaxLength(50);
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor).HasMaxLength(50);
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.Porcentaje).HasColumnType("decimal(10, 4)");
         });
 
         OnModelCreatingPartial(modelBuilder);

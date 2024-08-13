@@ -1,0 +1,62 @@
+﻿@model FacturasSAP.Common.Models.Encomienda.PagoEncomiendaModel
+@{
+    ViewData["Title"] = "CrearPagosEncomiendas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal-header">
+    <h5 class="modal-title" id="modalGenericaLabel">Factura Encomienda</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+
+    <form class="row">
+
+        <div class="form-group col-md-12">
+            <label asp-for="Id" class="control-label"></label>
+            <input asp-for="Id" class="form-control" />
+            <span asp-validation-for="Id" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="FacturaSAP" class="control-label"></label>
+            <input asp-for="FacturaSAP" class="form-control" />
+            <span asp-validation-for="FacturaSAP" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="Dolar" class="control-label"></label>
+            <input asp-for="Dolar" class="form-control" />
+            <span asp-validation-for="Dolar" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="IdRetencionImpuesto" class="control-label">Cosecha</label>
+            <select asp-for="IdRetencionImpuesto" asp-items="ViewBag.TipoRetencion"
+                    class="form-control select2" style="width: 100%;">
+            </select>
+            <span asp-validation-for="IdRetencionImpuesto" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="IdTipoExoneradoSAP" class="control-label">Estado</label>
+            <select asp-for="IdTipoExoneradoSAP" asp-items="ViewBag.TipoExoneracion"
+                    class="form-control select2" style="width: 100%;">
+            </select>
+            <span asp-validation-for="IdTipoExoneradoSAP" class="text-danger"></span>
+        </div>
+
+    </form>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger px-2 py-1" data-bs-dismiss="modal">Cancelar</button>
+    <button type="button" onclick="ModificarFactura()" class="btn btn-primary px-2 py-1">Guardar</button>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $('.select2').select2()
+    })
+</script>

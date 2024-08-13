@@ -1,0 +1,74 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "HCFContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Context",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "FacturasSAP.DatAccess",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 1,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[exp].[EmpresaGuia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[exp].[PagoEncomienda]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[exp].[PagoEncomiendaDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[exp].[RetencionImpuestos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[exp].[TipoExoneradoSAP]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[gen].[Paises]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[gen].[ProveedorSAP]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[gen].[TipoEncomienda]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace FacturasSAP.Common.Models.Encomienda
 {
-    public class TipoEncomiendaModel:ModelCaposDefecto
+    public class PaisModel:ModelCaposDefecto
     {
-        public int IdTipoEncomienda { get; set; }
-        public string Descripcion { get; set; }
+        public int IdPais { get; set; }
+        public string Pais { get; set; }
+        public string codigo { get; set; }
     }
 }
